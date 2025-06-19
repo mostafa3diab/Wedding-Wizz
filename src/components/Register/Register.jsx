@@ -1,13 +1,17 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { userContext } from "../../context/userContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import "./Register.css";
 
 function Register() {
   let navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRePassword, setShowRePassword] = useState(false);
 
   let { setLogin } = useContext(userContext);
 
@@ -30,6 +34,14 @@ function Register() {
       console.error("Error during registration:", error);
     }
   }
+
+  const togglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const toggleRePassword = () => {
+    setShowRePassword((prev) => !prev);
+  };
 
   let validationSchema = Yup.object({
     name: Yup.string()
@@ -71,6 +83,8 @@ function Register() {
       navigate("/");
     }
   });
+
+  const isInvalid = formik.touched.rePassword && formik.errors.rePassword;
 
   return (
     <>
@@ -149,11 +163,11 @@ function Register() {
                       </div>
 
                       <div className="col-12">
-                        <div className="form-floating mb-3">
+                        <div className="form-floating mb-3 position-relative">
                           <input
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             className={`form-control ${
                               formik.touched.password && formik.errors.password
                                 ? "is-invalid"
@@ -168,25 +182,39 @@ function Register() {
                           <label htmlFor="password" className="form-label">
                             Password
                           </label>
-                          {formik.touched.password && formik.errors.password ? (
-                            <div className="text-danger">
-                              {formik.errors.password}
-                            </div>
-                          ) : null}
+
+                          {/* 👁 Eye Icon */}
+                          <span
+                            onClick={togglePassword}
+                            style={{
+                              position: "absolute",
+                              top: "30px",
+                              right: "10px",
+                              transform: "translateY(-50%)",
+                              cursor: "pointer",
+                              zIndex: 10,
+                            }}
+                          >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                          </span>
+
+                          {formik.touched.password &&
+                            formik.errors.password && (
+                              <div className="text-danger">
+                                {formik.errors.password}
+                              </div>
+                            )}
                         </div>
                       </div>
 
                       <div className="col-12">
-                        <div className="form-floating mb-3">
+                        <div className="form-floating mb-3 position-relative">
                           <input
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            type="password"
-                            className={`form-control ${
-                              formik.touched.rePassword &&
-                              formik.errors.rePassword
-                                ? "is-invalid"
-                                : ""
+                            type={showRePassword ? "text" : "password"}
+                            className={`form-control has-eye ${
+                              isInvalid ? "is-invalid" : ""
                             }`}
                             name="rePassword"
                             value={formik.values.rePassword}
@@ -197,12 +225,17 @@ function Register() {
                           <label htmlFor="rePassword" className="form-label">
                             Re-enter Password
                           </label>
-                          {formik.touched.rePassword &&
-                          formik.errors.rePassword ? (
-                            <div className="text-danger">
+
+                          {/* 👁 Eye Icon */}
+                          <span className="eye-icon" onClick={toggleRePassword}>
+                            {showRePassword ? <FaEyeSlash /> : <FaEye />}
+                          </span>
+
+                          {isInvalid && (
+                            <div className="text-danger mt-1 small">
                               {formik.errors.rePassword}
                             </div>
-                          ) : null}
+                          )}
                         </div>
                       </div>
 
@@ -316,7 +349,7 @@ function Register() {
           </div>
         </div>
       </section>
-{/* <section className="bg-light p-3 p-md-4 p-xl-5">
+      {/* <section className="bg-light p-3 p-md-4 p-xl-5">
   <div className="container">
     <div className="row justify-content-center">
       <div className="col-12 col-xxl-11">

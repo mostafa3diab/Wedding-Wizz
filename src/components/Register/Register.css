@@ -1,0 +1,19 @@
+input.has-eye.is-invalid {
+  background-image: none !important;
+}
+
+/* Style for the eye icon */
+.eye-icon {
+  position: absolute;
+  top: 30px;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 10;
+  color: #6c757d;
+}
+
+/* Add padding to avoid text overlap with icon */
+input.has-eye {
+  padding-right: 2.5rem;
+}
