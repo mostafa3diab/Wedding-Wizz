@@ -1,15 +1,22 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { userContext } from "../../context/userContext";
 import { AuthContext } from "../../context/AuthContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import "./Login.css";
 
 function Login() {
   let navigate = useNavigate();
   let { setLogin } = useContext(userContext);
   const { setUserName } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   async function handleLogin(formsData) {
     try {
@@ -115,11 +122,11 @@ function Login() {
                         </div>
                       </div>
                       <div className="col-12">
-                        <div className="form-floating mb-3">
+                        <div className="form-floating mb-3 position-relative">
                           <input
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             className={`form-control ${
                               formik.touched.password && formik.errors.password
                                 ? "is-invalid"
@@ -134,11 +141,28 @@ function Login() {
                           <label htmlFor="password" className="form-label">
                             Password
                           </label>
-                          {formik.touched.password && formik.errors.password ? (
-                            <div className="text-danger">
-                              {formik.errors.password}
-                            </div>
-                          ) : null}
+
+                          {/* 👁 Eye Icon */}
+                          <span
+                            onClick={togglePassword}
+                            style={{
+                              position: "absolute",
+                              top: "30px",
+                              right: "10px",
+                              transform: "translateY(-50%)",
+                              cursor: "pointer",
+                              zIndex: 10,
+                            }}
+                          >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                          </span>
+
+                          {formik.touched.password &&
+                            formik.errors.password && (
+                              <div className="text-danger">
+                                {formik.errors.password}
+                              </div>
+                            )}
                         </div>
                       </div>
                       <div>
